@@ -1,0 +1,16 @@
+meta {
+  name: /user/<id> Delete user
+  type: http
+  seq: 18
+}
+
+delete {
+  url: {{storeURL}}/user/1
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

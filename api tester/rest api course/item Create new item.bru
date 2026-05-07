@@ -1,0 +1,28 @@
+meta {
+  name: /item Create new item
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{storeURL}}/item
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+body:json {
+  {
+    "name": "Lamp",
+    "price": 13.99,
+    "store_id": 2
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

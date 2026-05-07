@@ -1,0 +1,20 @@
+meta {
+  name: Get item id
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{storeURL}}/item/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{refresh_token}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

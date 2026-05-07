@@ -1,0 +1,16 @@
+meta {
+  name: /item/ID Delete item
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{storeURL}}/item/2
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

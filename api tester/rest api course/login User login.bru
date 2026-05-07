@@ -1,0 +1,28 @@
+meta {
+  name: /login User login
+  type: http
+  seq: 19
+}
+
+post {
+  url: {{storeURL}}/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "olivier",
+    "password": "1234"
+  }
+}
+
+vars:post-response {
+  refresh_token: res.body.refresh_token
+  access_token: res.body.access_token
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

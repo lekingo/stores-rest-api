@@ -36,7 +36,7 @@ class UserRegister(MethodView):
         if UserModel.query.filter(
             or_(
                 UserModel.username == user_data["username"], 
-                UserModel.username == user_data["email"])
+                UserModel.email == user_data["email"])
             ).first():
             abort(409, message="A user with the same username already exists.")
         

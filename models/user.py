@@ -1,7 +1,7 @@
 from db import db
 
 class UserModel(db.Model):
-    __table_name__ = 'users'
+    __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)

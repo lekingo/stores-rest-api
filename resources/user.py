@@ -15,19 +15,18 @@ from blocklist import BLOCKLIST
 
 blp = Blueprint("Users", "users", description="Operations on users")
 
-
-
-
 def send_simple_message(to, subject, body):
     domain = os.getenv("MAILGUN_DOMAIN")
-    apiKey = os.getenv("MAILGUN_API_KEY")
-    return requests.post(
+    api_key = os.getenv("MAILGUN_API_KEY")
+    response = requests.post(
         f"https://api.mailgun.net/v3/{domain}/messages",
-        auth=("api", os.getenv('MAILGUN_API_KEY')),
-        data={"from": f"Mailgun Sandbox <postmaster@{domain}>", 
-            "to":[to], 
+        auth=("api", api_key),
+        data={"from": f"Mailgun Sandbox <postmaster@{domain}>",
+            "to": [to],
             "subject": subject,
             "text": body})
+    response.raise_for_status()
+    return response
 
 
 @blp.route("/register")
@@ -49,14 +48,18 @@ class UserRegister(MethodView):
         try:
             db.session.add(user)
             db.session.commit()
+        except SQLAlchemyError:
+            abort(500, "Adding user failed.")
 
+        try:
             send_simple_message(
                 to=user.email,
                 subject="Successfully signed up",
                 body=f"Hi {user.username}! You have successfully signed up to the Stores REST API."
             )
-        except SQLAlchemyError: 
-            abort(500, "Adding user failed.")
+        except requests.HTTPError:
+            return {"message": "User created successfully but failed to send confirmation email."}, 201
+
         return {"message": "User created successfully."}, 201
 
 @blp.route("/login")    

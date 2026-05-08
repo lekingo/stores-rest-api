@@ -7,3 +7,4 @@ instance/
 *.pyc
 .DS_Store
 api tester/
+.env

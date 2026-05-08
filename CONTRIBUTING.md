@@ -4,6 +4,8 @@
 
 Add more information about how to build the image.
 
+Specify the content of the .env file.
+
 ```
 docker run -dp 5000:5000 -w /app -v "%cd%:/app" IMAGE_NAME sh -c "flask db upgrade && flask run --host 0.0.0.0"
 ```

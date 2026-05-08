@@ -6,3 +6,4 @@ data.db
 instance/
 *.pyc
 .DS_Store
+api tester/

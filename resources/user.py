@@ -21,7 +21,7 @@ def send_simple_message(to, subject, body):
     response = requests.post(
         f"https://api.mailgun.net/v3/{domain}/messages",
         auth=("api", api_key),
-        data={"from": f"Mailgun Sandbox <postmaster@{domain}>",
+        data={"from": f"Olivier Q-B <postmaster@{domain}>",
             "to": [to],
             "subject": subject,
             "text": body})

@@ -1,5 +1,6 @@
 import os
-import requests
+
+from flask import current_app
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
@@ -11,22 +12,10 @@ from db import db
 from models import UserModel
 from schemas import UserSchema, UserRegisterSchema
 from blocklist import BLOCKLIST
+from tasks import send_user_registration_email
 
 
 blp = Blueprint("Users", "users", description="Operations on users")
-
-def send_simple_message(to, subject, body):
-    domain = os.getenv("MAILGUN_DOMAIN")
-    api_key = os.getenv("MAILGUN_API_KEY")
-    response = requests.post(
-        f"https://api.mailgun.net/v3/{domain}/messages",
-        auth=("api", api_key),
-        data={"from": f"Olivier Q-B <postmaster@{domain}>",
-            "to": [to],
-            "subject": subject,
-            "text": body})
-    response.raise_for_status()
-    return response
 
 
 @blp.route("/register")
@@ -52,13 +41,12 @@ class UserRegister(MethodView):
             abort(500, "Adding user failed.")
 
         try:
-            send_simple_message(
-                to=user.email,
-                subject="Successfully signed up",
-                body=f"Hi {user.username}! You have successfully signed up to the Stores REST API."
-            )
-        except requests.HTTPError:
-            return {"message": "User created successfully but failed to send confirmation email."}, 201
+            if current_app.queue:
+                current_app.queue.enqueue(send_user_registration_email, user.email, user.username)
+            else:
+                send_user_registration_email(user.email, user.username)
+        except Exception:
+            send_user_registration_email(user.email, user.username)
 
         return {"message": "User created successfully."}, 201
 
